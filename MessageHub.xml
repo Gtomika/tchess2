@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MessageHub</name>
+    </assembly>
+    <members>
+        <member name="T:MessageHub.IMessageHub">
+            <summary>
+            An implementation of the <c>Event Aggregator</c> pattern.
+            </summary>
+        </member>
+        <member name="M:MessageHub.IMessageHub.Publish``1(``0)">
+            <summary>
+            Publishes the <paramref name="message"/> on the <see cref="T:MessageHub.IMessageHub"/>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="message">The message to published</param>
+        </member>
+        <member name="M:MessageHub.IMessageHub.Subscribe``1(System.Action{``0})">
+            <summary>
+            Subscribes a callback against the <see cref="T:MessageHub.IMessageHub"/> for a specific type of message.
+            </summary>
+            <typeparam name="T">The type of message to subscribe to</typeparam>
+            <param name="action">The callback to be invoked once the message is published on the <see cref="T:MessageHub.IMessageHub"/></param>
+            <returns>The subscription</returns>
+        </member>
+        <member name="M:MessageHub.IMessageHub.UnSubscribe``1(MessageHub.Subscription{``0})">
+            <summary>
+            Subscribes a callback against the <see cref="T:MessageHub.MessageHub"/> for a specific type of message.
+            </summary>
+            <typeparam name="T">The type of message to subscribe to</typeparam>
+            <param name="action">The callback to be invoked once the message is published on the <see cref="T:MessageHub.MessageHub"/></param>
+            <param name="throttleBy">The <see cref="T:System.TimeSpan"/> specifying the rate at which subscription is throttled</param>
+            <returns><c>True</c> if UnSubscribe is success otherwise <c>False</c></returns>
+        </member>
+        <member name="M:MessageHub.IMessageHub.IsRegistered(System.Type)">
+            <summary>
+            Checks if a specific Type is active on the <see cref="T:MessageHub.IMessageHub"/>.
+            </summary>
+            <param name="t">Type</param>
+            <returns></returns>
+        </member>
+        <member name="M:MessageHub.IMessageHub.IsRegistered``1">
+            <summary>
+            Checks if a specific Type is active on the <see cref="T:MessageHub.IMessageHub"/>.
+            </summary>
+            <typeparam name="T">Type</typeparam>
+            <returns><c>True</c> if the Type is active otherwise <c>False</c></returns>
+        </member>
+        <member name="M:MessageHub.IMessageHub.IsRegistered``1(``0)">
+            <summary>
+            Checks if a specific Type is active on the <see cref="T:MessageHub.IMessageHub"/>.
+            </summary>
+            <typeparam name="T">Type</typeparam>
+            <param name="obj">object of T</param>
+            <returns><c>True</c> if the Type is active otherwise <c>False</c></returns>
+        </member>
+        <member name="P:MessageHub.IMessageHub.Count">
+            <summary>
+            Return registered type count
+            </summary>
+        </member>
+        <member name="M:MessageHub.IMessageHub.GetRegisteredType">
+            <summary>
+            Get registered type
+            </summary>
+            <returns>return registered type</returns>
+        </member>
+        <member name="M:MessageHub.IMessageHub.ClearSubscriptions">
+            <summary>
+            Clears all the subscriptions from the <see cref="T:MessageHub.IMessageHub"/>.
+            <remarks>The global handler and the <see cref="E:MessageHub.IMessageHub.OnError"/> are not affected</remarks>
+            </summary>
+        </member>
+        <member name="M:MessageHub.IMessageHub.RegisterGlobalHandler(System.Action{System.Type,System.Object})">
+            <summary>
+            Registers a callback which is invoked on every message published by the <see cref="T:MessageHub.IMessageHub"/>.
+            <remarks>Invoking this method with a new <paramref name="onMessage"/>overwrites the previous one.</remarks>
+            </summary>
+            <param name="onMessage">
+            The callback to invoke on every message
+            <remarks>The callback receives the type of the message and the message as arguments</remarks>
+            </param>
+        </member>
+        <member name="E:MessageHub.IMessageHub.OnError">
+            <summary>
+            Invoked if an error occurs when publishing the message to a subscriber.
+            </summary>
+        </member>
+        <member name="T:MessageHub.MessageHubErrorEventArgs">
+            <summary>
+            A class representing an error event raised by the <see cref="T:MessageHub.IMessageHub"/>
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:MessageHub.MessageHubErrorEventArgs.#ctor(System.Object,System.String,System.Exception)" -->
+        <member name="P:MessageHub.MessageHubErrorEventArgs.Exception">
+            <summary>
+            Gets the exception thrown by the <see cref="T:MessageHub.IMessageHub"/>
+            </summary>
+        </member>
+        <member name="P:MessageHub.MessageHubErrorEventArgs.Token">
+            <summary>
+            Gets the subscription token of the subscriber to which 
+            message was published by the <see cref="T:MessageHub.IMessageHub"/>
+            </summary>
+        </member>
+    </members>
+</doc>

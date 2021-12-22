@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:TChess2">
+
+    <BitmapImage x:Key="imgWhitePawn" UriSource="./Img/white_pawn.png"/>
+    <BitmapImage x:Key="imgWhiteKnight" UriSource="./Img/white_knight.png"/>
+    <BitmapImage x:Key="imgWhiteBishop" UriSource="./Img/white_bishop.png"/>
+    <BitmapImage x:Key="imgWhiteRook" UriSource="./Img/white_rook.png"/>
+    <BitmapImage x:Key="imgWhiteQueen" UriSource="./Img/white_queen.png"/>
+    <BitmapImage x:Key="imgWhiteKing" UriSource="./Img/white_king.png"/>
+    <BitmapImage x:Key="imgBlackPawn" UriSource="./Img/black_pawn.png"/>
+    <BitmapImage x:Key="imgBlackKnight" UriSource="./Img/black_knight.png"/>
+    <BitmapImage x:Key="imgBlackBishop" UriSource="./Img/black_bishop.png"/>
+    <BitmapImage x:Key="imgBlackRook" UriSource="./Img/black_rook.png"/>
+    <BitmapImage x:Key="imgBlackQueen" UriSource="./Img/black_queen.png"/>
+    <BitmapImage x:Key="imgBlackKing" UriSource="./Img/black_king.png"/>
+
+    <BitmapImage x:Key="imgArrowStart" UriSource="./Img/arrow_start.png"/>
+    <BitmapImage x:Key="imgArrowEnd" UriSource="./Img/arrow_end.png"/>
+    <BitmapImage x:Key="imgArrowBack" UriSource="./Img/arrow_back.png"/>
+    <BitmapImage x:Key="imgArrowForward" UriSource="./Img/arrow_forward.png"/>
+    <BitmapImage x:Key="imgPlay" UriSource="./Img/play.png"/>
+    <BitmapImage x:Key="imgPause" UriSource="./Img/pause.png"/>
+    <BitmapImage x:Key="imgFlipBoard" UriSource="./Img/flip_board.png"/>
+    <BitmapImage x:Key="imgSettings" UriSource="./Img/settings.png"/>
+
+</ResourceDictionary>
