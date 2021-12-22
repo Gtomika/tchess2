@@ -206,11 +206,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Agents\Agent.cs" />
+    <Compile Include="Agents\AgentUtils.cs" />
+    <Compile Include="Agents\PlayerAgent.cs" />
+    <Compile Include="Agents\StockfishAgent.cs" />
     <Compile Include="Events\EventBoardFlipped.cs" />
     <Compile Include="Events\EventGameStarted.cs" />
+    <Compile Include="Events\EventMoveMade.cs" />
     <Compile Include="Events\EventSelectedPlayerChanged.cs" />
     <Compile Include="Events\EventTimeControlChanged.cs" />
     <Compile Include="TChess\BoardFlip.cs" />
+    <Compile Include="TChess\MoveMakerThread.cs" />
+    <Compile Include="TChess\GameStatusReport.cs" />
     <Compile Include="TChess\TChessUtils.cs" />
     <Compile Include="TChess\Side.cs" />
     <Compile Include="TChess\TimeControl.cs" />

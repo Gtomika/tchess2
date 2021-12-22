@@ -37,4 +37,13 @@
     <system:String x:Key="strTimeTooMuch">Selected time is too much (maximum 10 hours)!</system:String>
     <system:String x:Key="strIncrementTooMuch">Selected increment is too much (maximum 10 minutes)!</system:String>
 
+    <!-- Game status. -->
+    <system:String x:Key="strCheckmate">Checkmate</system:String>
+    <system:String x:Key="strDraw">Draw</system:String>
+    <system:String x:Key="strInsufficientMaterial">Insufficient material</system:String>
+    <system:String x:Key="strStalemate">Stalemate</system:String>
+    <system:String x:Key="strRepetition">Move repetition</system:String>
+    <system:String x:Key="strResignation">Resignation</system:String>
+    <system:String x:Key="strFiftyMoveRule">50 move rule</system:String>
+    
 </ResourceDictionary>

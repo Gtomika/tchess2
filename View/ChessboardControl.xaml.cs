@@ -14,7 +14,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ChessDotNet;
 using TChess2;
+using TChess2.Agents;
 using TChess2.Events;
+using TChess2.TChess;
 
 /*
  * https://github.com/thomas-daniels/Chess.NET/blob/master/Samples/BasicUsageSample.cs
@@ -41,6 +43,8 @@ namespace TChess2.View
             //subscribe to events
             var hub = MessageHub.MessageHub.Instance;
             hub.Subscribe<EventBoardFlipped>(e => OnBoardFlipped(e));
+            hub.Subscribe<EventGameStarted>(e => OnGameStarted(e));
+            hub.Subscribe<EventMoveMade>(e => OnMoveMade(e));
         }
 
         //Rectangles that are the backgrounds of each square on the board.
@@ -56,6 +60,19 @@ namespace TChess2.View
 
         //Stores the board flip status.
         private TChess.BoardFlip BoardFlip;
+
+        //stores if there is an active, ongoing game.
+        private bool GameOngoing;
+
+        /// <summary>
+        /// This agent plays for white. Set when a game is started.
+        /// </summary>
+        public Agent WhiteAgent { get; set; }
+
+        /// <summary>
+        /// This agent plays for black. Set when a game is started.
+        /// </summary>
+        public Agent BlackAgent { get; set; }
 
         /// <summary>
         /// Creates and stores the rectangles that are the backgrounds of the squares.
@@ -216,6 +233,78 @@ namespace TChess2.View
                 DrawPieces(new ChessGame(), BoardFlip);
             }
            
+        }
+
+        /// <summary>
+        /// Called when a game is started. Draws a starting position.
+        /// </summary>
+        /// <param name="e">Event with details.</param>
+        private void OnGameStarted(EventGameStarted e)
+        {
+            GameOngoing = true;
+            CurrentGame = new ChessGame();
+            //setup board: initial setup of pieces
+            DrawPieces(CurrentGame, BoardFlip);
+            //get agents.
+            WhiteAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, this);
+            BlackAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, this);
+            //start the white agent
+            MoveMakerThread.StartMoveMakerThread(WhiteAgent, CurrentGame.GetFen());
+        }
+
+        /// <summary>
+        /// Called when the agent responsible to make the best move 
+        /// has selected a move.
+        /// </summary>
+        /// <param name="e">Event with details.</param>
+        private void OnMoveMade(EventMoveMade e)
+        {
+            if(CurrentGame.IsValidMove(e.ChosenMove))
+            {
+                //the agent made a valid move
+                //play the move in the game object
+                CurrentGame.MakeMove(e.ChosenMove, alreadyValidated:true);
+                /*
+                 * update the board. This is not very effective, as it 
+                 * updates the whole board, even though only a few squares changed.
+                 * However, I avoid some nasty logic about castling and en passant.
+                 */
+                DrawPieces(CurrentGame, BoardFlip);
+                //check if the game is over
+                var report = GameStatusReport.CreateGameReport(CurrentGame, this);
+                if(report.Status == GameStatus.ONGOING)
+                {
+                    //the game is still ongoing
+                    //tell the other agent to make the next move.
+                    MoveMakerThread.StartMoveMakerThread(
+                        CurrentGame.WhoseTurn == Player.White ? WhiteAgent : BlackAgent,
+                        CurrentGame.GetFen()
+                    );
+                }
+                else
+                {
+                    //the game is over
+                    OnGameOver(report);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{CurrentGame.WhoseTurn} made an invalid move: {e.ChosenMove}. This player is resigned.");
+                //the agent made an invalid move, should not happen
+                //this agent must resign
+                CurrentGame.Resign(CurrentGame.WhoseTurn);
+                var report = GameStatusReport.CreateGameReport(CurrentGame, this);
+                OnGameOver(report);
+            }
+        }
+
+        /// <summary>
+        /// Called when a game is finished.
+        /// </summary>
+        /// <param name="gameReport">Contains the result.</param>
+        private void OnGameOver(GameStatusReport gameReport)
+        {
+            //TODO
         }
     }
 }

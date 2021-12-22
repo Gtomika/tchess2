@@ -85,6 +85,5 @@ namespace TChess2.TChess
             return pieceImage;
         }
 
-
     }
 }
