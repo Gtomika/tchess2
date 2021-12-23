@@ -23,5 +23,10 @@ namespace TChess2.Agents
             //TODO
             throw new NotImplementedException();
         }
+
+        public override bool IsHumanControlled()
+        {
+            return false;
+        }
     }
 }

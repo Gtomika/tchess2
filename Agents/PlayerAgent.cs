@@ -26,5 +26,10 @@ namespace TChess2.Agents
         {
             return null;
         }
+
+        public override bool IsHumanControlled()
+        {
+            return true;
+        }
     }
 }

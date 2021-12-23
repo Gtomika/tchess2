@@ -34,6 +34,7 @@ namespace TChess2.View
         {
             InitializeComponent();
             PieceImages = new Dictionary<Position, Image>();
+            MoveHelpers = new List<Ellipse>();
             BoardFlip = TChess.BoardFlip.NORMAL;
             //setup board: square backgrounds
             CreateChessboardSquares(BoardFlip);
@@ -45,6 +46,9 @@ namespace TChess2.View
             hub.Subscribe<EventBoardFlipped>(e => OnBoardFlipped(e));
             hub.Subscribe<EventGameStarted>(e => OnGameStarted(e));
             hub.Subscribe<EventMoveMade>(e => OnMoveMade(e));
+            //some initialization
+            GameOngoing = false;
+            WaitingForGuiMove = false;
         }
 
         //Rectangles that are the backgrounds of each square on the board.
@@ -62,7 +66,10 @@ namespace TChess2.View
         private TChess.BoardFlip BoardFlip;
 
         //stores if there is an active, ongoing game.
-        private bool GameOngoing;
+        private bool GameOngoing { get; set; }
+
+        //stores if the program is waiting for a human player to make a move.
+        private bool WaitingForGuiMove { get; set; }
 
         /// <summary>
         /// This agent plays for white. Set when a game is started.
@@ -98,6 +105,12 @@ namespace TChess2.View
                 Grid.SetColumn(background, column + 1);
                 Grid.SetRow(background, row);
                 Grid.SetZIndex(background, -1);
+                //add click listener
+                int iCopy = i;
+                background.MouseDown += (source, e) =>
+                {
+                    OnSquareClicked(iCopy);
+                };
                 //save
                 ChessboardSquareBackgrounds[i] = background;
                 //add to grid
@@ -180,17 +193,9 @@ namespace TChess2.View
                     //load image based on piece
                     Image pieceImage = TChess.TChessUtils.GetImageOfPiece(piece, this);
                     //set position, depends on board flip
-                    if(boardFlip == TChess.BoardFlip.NORMAL)
-                    {
-                        int row = 7 - (i / 8), column = i % 8;
-                        Grid.SetColumn(pieceImage, column + 1);
-                        Grid.SetRow(pieceImage, row);
-                    } else
-                    {
-                        int row = i / 8, column = 7 - (i % 8);
-                        Grid.SetColumn(pieceImage, column + 1);
-                        Grid.SetRow(pieceImage, row);
-                    }
+                    var gpos = TChessUtils.GridPositionFromIndex(i, boardFlip);
+                    Grid.SetColumn(pieceImage, gpos.Item1);
+                    Grid.SetRow(pieceImage, gpos.Item2);
                     Grid.SetZIndex(pieceImage, 1);
                     //add image to grid.
                     ChessboardGrid.Children.Add(pieceImage);
@@ -249,6 +254,10 @@ namespace TChess2.View
             WhiteAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, this);
             BlackAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, this);
             //start the white agent
+            if (WhiteAgent.IsHumanControlled())
+            {
+                WaitingForGuiMove = true;
+            }
             MoveMakerThread.StartMoveMakerThread(WhiteAgent, CurrentGame.GetFen());
         }
 
@@ -262,6 +271,7 @@ namespace TChess2.View
             if(CurrentGame.IsValidMove(e.ChosenMove))
             {
                 //the agent made a valid move
+                WaitingForGuiMove = false;
                 //play the move in the game object
                 CurrentGame.MakeMove(e.ChosenMove, alreadyValidated:true);
                 /*
@@ -276,8 +286,14 @@ namespace TChess2.View
                 {
                     //the game is still ongoing
                     //tell the other agent to make the next move.
+                    var agentToMakeNextMove = CurrentGame.WhoseTurn == Player.White 
+                        ? WhiteAgent : BlackAgent;
+                    if(agentToMakeNextMove.IsHumanControlled())
+                    {
+                        WaitingForGuiMove = true;
+                    }
                     MoveMakerThread.StartMoveMakerThread(
-                        CurrentGame.WhoseTurn == Player.White ? WhiteAgent : BlackAgent,
+                        agentToMakeNextMove,
                         CurrentGame.GetFen()
                     );
                 }
@@ -305,6 +321,82 @@ namespace TChess2.View
         private void OnGameOver(GameStatusReport gameReport)
         {
             //TODO
+        }
+
+        /// <summary>
+        /// Called when one of the chessboard squares was clicked.
+        /// </summary>
+        /// <param name="i">Index of the square.</param>
+        private void OnSquareClicked(int i)
+        {
+            //remove helpers, in case they are present
+            RemoveMoveHelpers();
+            //find in game position of this square, such as "A4".
+            var pos = TChessUtils.PositionFromIndex(i, BoardFlip);
+            //Console.WriteLine($"The square {pos} was clicked!");
+            //if this is a human controlled players's turn to move
+            if(GameOngoing && WaitingForGuiMove)
+            {
+                var piece = CurrentGame.GetPieceAt(pos);
+                if(piece != null && piece.Owner == CurrentGame.WhoseTurn)
+                {
+                    //there is a piece on this square which belongs 
+                    //to the player whos turn to move
+                    var moves = CurrentGame.GetValidMoves(pos);
+                    //Console.WriteLine($"From {pos} {CurrentGame.WhoseTurn} can move to {moves.Count} squares.");
+                    //draw helpers
+                    if(moves.Count > 0)
+                    {
+                        DrawMoveHelpers(moves);
+                    }
+                }
+            }
+        }
+
+        //stores the currently displayed move helpers.
+        private List<Ellipse> MoveHelpers;
+
+        /// <summary>
+        /// Draws move helpers for the given moves. 
+        /// </summary>
+        /// <param name="moves">The moves.</param>
+        private void DrawMoveHelpers(IReadOnlyCollection<Move> moves)
+        {
+            //semi transparent color for the move helpers
+            var brush = new SolidColorBrush { Color = Color.FromArgb(175, 169, 169, 169) };
+            foreach (Move move in moves)
+            {
+                //the move helper must be placed to the moves destination
+                var gpos = TChessUtils.GridPositionFromPosition(move.NewPosition, BoardFlip);
+                Ellipse moveHelper = new Ellipse
+                {
+                    IsHitTestVisible = false, //allow click through
+                    Fill = brush,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Width = 30,
+                    Height = 30
+                };
+                Grid.SetColumn(moveHelper, gpos.Item1);
+                Grid.SetRow(moveHelper, gpos.Item2);
+                Grid.SetZIndex(moveHelper, 2); //above even pieces
+                //save
+                MoveHelpers.Add(moveHelper);
+                //add to grid
+                ChessboardGrid.Children.Add(moveHelper);
+            }
+        }
+
+        /// <summary>
+        /// Clears the move helpers from the board.
+        /// </summary>
+        private void RemoveMoveHelpers()
+        {
+            foreach(Ellipse moveHelper in MoveHelpers)
+            {
+                ChessboardGrid.Children.Remove(moveHelper);
+            }
+            MoveHelpers.Clear();
         }
     }
 }

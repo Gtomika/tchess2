@@ -32,5 +32,10 @@ namespace TChess2.Agents
         /// <returns>The move.</returns>
         public abstract Move MakeMove(string fen);
 
+        /// <summary>
+        /// Returns whether this agent is human controlled (uses the GUI 
+        /// to enter moves) or not.
+        /// </summary>
+        public abstract bool IsHumanControlled();
     }
 }
