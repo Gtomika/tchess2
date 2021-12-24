@@ -71,6 +71,12 @@ namespace TChess2.View
         //stores if the program is waiting for a human player to make a move.
         private bool WaitingForGuiMove { get; set; }
 
+        //This value is true if a piece is selected for move on the GUI.
+        private bool PieceSelected { get; set; }
+
+        //The user has this square currently selected.
+        private Position SelectedPosition { get; set; }
+
         /// <summary>
         /// This agent plays for white. Set when a game is started.
         /// </summary>
@@ -149,7 +155,7 @@ namespace TChess2.View
                 TextFile2.Text = "g";
                 TextFile3.Text = "f";
                 TextFile4.Text = "e";
-                TextFile5.Text = "f";
+                TextFile5.Text = "d";
                 TextFile6.Text = "c";
                 TextFile7.Text = "b";
                 TextFile8.Text = "a";
@@ -237,7 +243,10 @@ namespace TChess2.View
                 //draw defaul position
                 DrawPieces(new ChessGame(), BoardFlip);
             }
-           
+            //remove selected status just in case
+            RemoveMoveHelpers();
+            SelectedPosition = null;
+            PieceSelected = false;
         }
 
         /// <summary>
@@ -271,7 +280,9 @@ namespace TChess2.View
             if(CurrentGame.IsValidMove(e.ChosenMove))
             {
                 //the agent made a valid move
+                PieceSelected = false;
                 WaitingForGuiMove = false;
+                SelectedPosition = null;
                 //play the move in the game object
                 CurrentGame.MakeMove(e.ChosenMove, alreadyValidated:true);
                 /*
@@ -334,23 +345,64 @@ namespace TChess2.View
             //find in game position of this square, such as "A4".
             var pos = TChessUtils.PositionFromIndex(i, BoardFlip);
             //Console.WriteLine($"The square {pos} was clicked!");
-            //if this is a human controlled players's turn to move
-            if(GameOngoing && WaitingForGuiMove)
-            {
-                var piece = CurrentGame.GetPieceAt(pos);
-                if(piece != null && piece.Owner == CurrentGame.WhoseTurn)
+            if (!PieceSelected) //there is currently no piece selected, user is attempting to select one
+            {    
+                //if this is a human controlled players's turn to move
+                if (GameOngoing && WaitingForGuiMove)
                 {
-                    //there is a piece on this square which belongs 
-                    //to the player whos turn to move
-                    var moves = CurrentGame.GetValidMoves(pos);
-                    //Console.WriteLine($"From {pos} {CurrentGame.WhoseTurn} can move to {moves.Count} squares.");
-                    //draw helpers
-                    if(moves.Count > 0)
+                    var piece = CurrentGame.GetPieceAt(pos);
+                    if (piece != null && piece.Owner == CurrentGame.WhoseTurn)
                     {
-                        DrawMoveHelpers(moves);
+                        //there is a piece on this square which belongs 
+                        //to the player whos turn to move
+                        var moves = CurrentGame.GetValidMoves(pos);
+                        //Console.WriteLine($"From {pos} {CurrentGame.WhoseTurn} can move to {moves.Count} squares.");
+                        //draw helpers
+                        if (moves.Count > 0)
+                        {
+                            //user has legal moves with tihs piece
+                            //save this position as selected
+                            SelectedPosition = pos;
+                            PieceSelected = true;
+                            DrawMoveHelpers(moves);
+                        }
+                       
+                    }
+                }
+            } else //there is a piece selected, user is attempting to make a move with it
+            {
+                if(GameOngoing && WaitingForGuiMove)
+                {
+                    var piece = CurrentGame.GetPieceAt(pos);
+                    if (piece != null && piece.Owner == CurrentGame.WhoseTurn && pos != SelectedPosition)
+                    {
+                        //user has another piece on this square, which means he reconsidered and wants to make 
+                        //a move now with this piece instead
+                        PieceSelected = false;
+                        SelectedPosition = null;
+                        OnSquareClicked(i);
+                    } else
+                    {
+                        //user wants to make a move, to an empty or enemy square
+                        //this is the move the user wants to make
+                        Move attemptedMove = new Move(SelectedPosition, pos, CurrentGame.WhoseTurn);
+                        //only allow if legal
+                        if (CurrentGame.IsValidMove(attemptedMove))
+                        {
+                            //publish a move made event
+                            var hub = MessageHub.MessageHub.Instance;
+                            hub.Publish(new EventMoveMade { ChosenMove = attemptedMove });
+                        }
+                        else
+                        {
+                            //this move is not legal
+                            SelectedPosition = null;
+                            PieceSelected = false;
+                        }
                     }
                 }
             }
+          
         }
 
         //stores the currently displayed move helpers.

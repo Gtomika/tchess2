@@ -33,7 +33,7 @@ namespace TChess2.TChess
                 return new Position((File)file, row + 1);
             } else
             {
-                int file = i % 8;
+                int file = 7 - (i % 8);
                 int row = i / 8;
                 return new Position((File)file, row + 1);
             }
@@ -80,9 +80,7 @@ namespace TChess2.TChess
                 column = (int)position.File + 1;
             } else
             {
-                //a8 -> rank = 8, expected = 8
-                row = position.Rank;
-                //a8 -> file = a (numeric 0), expected = 8
+                row = position.Rank - 1;
                 column = 8 - (int)position.File;
             }
             return new Tuple<int, int>(column, row);
