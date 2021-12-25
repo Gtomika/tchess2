@@ -31,5 +31,10 @@ namespace TChess2.Agents
         {
             return true;
         }
+
+        public override void CloseResources()
+        {
+            //does not need resources
+        }
     }
 }

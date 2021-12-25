@@ -14,6 +14,8 @@
     <BitmapImage x:Key="imgBlackRook" UriSource="./Img/black_rook.png"/>
     <BitmapImage x:Key="imgBlackQueen" UriSource="./Img/black_queen.png"/>
     <BitmapImage x:Key="imgBlackKing" UriSource="./Img/black_king.png"/>
+    <BitmapImage x:Key="imgWhiteKingCheck" UriSource="./Img/white_king_check.png"/>
+    <BitmapImage x:Key="imgBlackKingCheck" UriSource="./Img/black_king_check.png"/>
 
     <BitmapImage x:Key="imgArrowStart" UriSource="./Img/arrow_start.png"/>
     <BitmapImage x:Key="imgArrowEnd" UriSource="./Img/arrow_end.png"/>
@@ -23,5 +25,6 @@
     <BitmapImage x:Key="imgPause" UriSource="./Img/pause.png"/>
     <BitmapImage x:Key="imgFlipBoard" UriSource="./Img/flip_board.png"/>
     <BitmapImage x:Key="imgSettings" UriSource="./Img/settings.png"/>
+    <BitmapImage x:Key="imgResign" UriSource="./Img/resign.png"/>
 
 </ResourceDictionary>

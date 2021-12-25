@@ -91,18 +91,33 @@ namespace TChess2.TChess
         /// </summary>
         /// <param name="piece">The piece.</param>
         /// <param name="control">Control to access resources.</param>
+        /// <param name="whiteInCheck">If white is is check, needs other king image.</param>
+        /// <param name="blackInCheck">If black is is check, needs other king image.</param>
         /// <returns>Image view that has the piece image loaded.</returns>
-        public static Image GetImageOfPiece(Piece piece, UserControl control)
+        public static Image GetImageOfPiece(Piece piece, UserControl control, bool whiteInCheck, bool blackInCheck)
         {
             BitmapImage bitmap;
             //upper case is white, lower case is black
             switch (piece.GetFenCharacter())
             {
                 case 'K':
-                    bitmap = (BitmapImage)control.FindResource("imgWhiteKing");
+                    if(whiteInCheck)
+                    {
+                        bitmap = (BitmapImage)control.FindResource("imgWhiteKingCheck");
+                    } else
+                    {
+                        bitmap = (BitmapImage)control.FindResource("imgWhiteKing");
+                    }
                     break;
                 case 'k':
-                    bitmap = (BitmapImage)control.FindResource("imgBlackKing");
+                    if (blackInCheck)
+                    {
+                        bitmap = (BitmapImage)control.FindResource("imgBlackKingCheck");
+                    }
+                    else
+                    {
+                        bitmap = (BitmapImage)control.FindResource("imgBlackKing");
+                    }
                     break;
                 case 'Q':
                     bitmap = (BitmapImage)control.FindResource("imgWhiteQueen");
@@ -145,6 +160,36 @@ namespace TChess2.TChess
                 VerticalAlignment = System.Windows.VerticalAlignment.Stretch
             };
             return pieceImage;
+        }
+
+        /// <summary>
+        /// Converts character such as 'a' to File constant.
+        /// </summary>
+        /// <param name="letter">The character.</param>
+        /// <returns>File constant of the letter</returns>
+        public static File GetFileFromChar(char letter)
+        {
+            switch(letter)
+            {
+                case 'a':
+                    return File.A;
+                case 'b':
+                    return File.B;
+                case 'c':
+                    return File.C;
+                case 'd':
+                    return File.D;
+                case 'e':
+                    return File.E;
+                case 'f':
+                    return File.F;
+                case 'g':
+                    return File.G;
+                case 'h':
+                    return File.H;
+                default:
+                    throw new ArgumentException($"'{letter}' is not a valid file character!");
+            }
         }
 
     }

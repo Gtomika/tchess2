@@ -24,5 +24,13 @@ namespace TChess2
         {
             InitializeComponent();
         }
+
+        /// <summary>
+        /// Called when the app is being closed.
+        /// </summary>
+        private void OnAppClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
     }
 }

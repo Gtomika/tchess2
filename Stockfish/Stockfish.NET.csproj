@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Stockfish.NET</AssemblyName>
+    <RootNamespace>Stockfish.NET</RootNamespace>
+    <NuspecFile>Stockfish.NET.nuspec</NuspecFile>
+  </PropertyGroup>
+
+</Project>

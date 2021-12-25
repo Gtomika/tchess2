@@ -24,6 +24,7 @@
     <system:String x:Key="strStartGame">Start game</system:String>
     <system:String x:Key="strErrorSelectPlayers">Select both players first!</system:String>
     <system:String x:Key="strErrorSelectTimeControl">Select time control first!</system:String>
+    <system:String x:Key="strStockfishLauncherError">You selected Stockfish engine, but have not specified a path for it! Please do that under settings and use the test there to verify your path.</system:String>
     
     <!-- Custom time control dialog. -->
     <system:String x:Key="strCustomTimeControl">Custom time control</system:String>
@@ -45,5 +46,26 @@
     <system:String x:Key="strRepetition">Move repetition</system:String>
     <system:String x:Key="strResignation">Resignation</system:String>
     <system:String x:Key="strFiftyMoveRule">50 move rule</system:String>
+    
+    <!-- Settings. -->
+    <system:String x:Key="strSettings">TChess 2 Settings</system:String>
+    <system:String x:Key="strStockfishPath">Stockfish chess engine path</system:String>
+    <system:String x:Key="strSelectStockfishExe">Select Stockfish EXE</system:String>
+    <system:String x:Key="strClearSelection">Clear selection</system:String>
+    <system:String x:Key="strTestEngine">Test engine</system:String>
+    <system:String x:Key="strEngineWorking">Working</system:String>
+    <system:String x:Key="strEngineNotWorking">Not working</system:String>
+    <system:String x:Key="strEngineNotSelected">Not selected</system:String>
+    <system:String x:Key="strCloseSettings">Close settings</system:String>
+    <system:String x:Key="strConfirmResign">Are you sure you want to resign?</system:String>
+    
+    <!-- Game result view -->
+    <system:String x:Key="strGameResult">Game result</system:String>
+    <system:String x:Key="strOutcome">Outcome:</system:String>
+    <system:String x:Key="strOngoing">Ongoing</system:String>
+    <!-- x will be replaced  -->
+    <system:String x:Key="strWhiteWon">White (x) won</system:String>
+    <system:String x:Key="strBlackWon">Black (x) won</system:String>
+    <system:String x:Key="strReason">Reason:</system:String>
     
 </ResourceDictionary>

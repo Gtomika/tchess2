@@ -134,6 +134,7 @@ namespace TChess2.View
         /// </summary>
         private void GameStartClicked(object sender, RoutedEventArgs e)
         {
+            //validate inputs
             string error = (string)FindResource("strError");
             if(WhiteSelection == null || BlackSelection == null)
             {
@@ -147,6 +148,16 @@ namespace TChess2.View
                 MessageBox.Show(msg, error, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            //if stockfish was selected, verify that user has chosen stockfish path
+            string stockfishName = (string)FindResource("strStockfish");
+            string stockfishPath = Properties.Settings.Default.StockfishPath;
+            if((WhiteSelection==stockfishName || BlackSelection==stockfishName) && stockfishPath == "")
+            {
+                string message = (string)FindResource("strStockfishLauncherError");
+                MessageBox.Show(message, error, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             //game can start
             LockControls();
             var hub = MessageHub.MessageHub.Instance;

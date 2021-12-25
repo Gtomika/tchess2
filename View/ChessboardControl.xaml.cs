@@ -46,6 +46,7 @@ namespace TChess2.View
             hub.Subscribe<EventBoardFlipped>(e => OnBoardFlipped(e));
             hub.Subscribe<EventGameStarted>(e => OnGameStarted(e));
             hub.Subscribe<EventMoveMade>(e => OnMoveMade(e));
+            hub.Subscribe<EventResignClicked>(e => OnResignClicked(e));
             //some initialization
             GameOngoing = false;
             WaitingForGuiMove = false;
@@ -189,6 +190,14 @@ namespace TChess2.View
         {
             //clear board of drawings
             RemoveAllPieceDrawings();
+            //check for check...
+            bool whiteInCheck = false, blackInCheck = false;
+            if(CurrentGame != null)
+            {
+                whiteInCheck = CurrentGame.IsInCheck(Player.White);
+                blackInCheck = CurrentGame.IsInCheck(Player.Black);
+            }
+
             //add drawings back
             for(int i = 0; i < 64; i++)
             {
@@ -197,7 +206,7 @@ namespace TChess2.View
                 if(piece != null)
                 {
                     //load image based on piece
-                    Image pieceImage = TChess.TChessUtils.GetImageOfPiece(piece, this);
+                    Image pieceImage = TChess.TChessUtils.GetImageOfPiece(piece, this, whiteInCheck, blackInCheck);
                     //set position, depends on board flip
                     var gpos = TChessUtils.GridPositionFromIndex(i, boardFlip);
                     Grid.SetColumn(pieceImage, gpos.Item1);
@@ -260,8 +269,8 @@ namespace TChess2.View
             //setup board: initial setup of pieces
             DrawPieces(CurrentGame, BoardFlip);
             //get agents.
-            WhiteAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, this);
-            BlackAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, this);
+            WhiteAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, Player.White, this);
+            BlackAgent = Agents.AgentUtils.AgentFromName(e.BlackName, Player.Black, this);
             //start the white agent
             if (WhiteAgent.IsHumanControlled())
             {
@@ -331,7 +340,16 @@ namespace TChess2.View
         /// <param name="gameReport">Contains the result.</param>
         private void OnGameOver(GameStatusReport gameReport)
         {
-            //TODO
+            //cancel everything
+            GameOngoing = false;
+            WaitingForGuiMove = false;
+            PieceSelected = false;
+            SelectedPosition = null;
+            RemoveMoveHelpers();
+
+            //publish game over for other components
+            var hub = MessageHub.MessageHub.Instance;
+            hub.Publish(new EventGameOver { GameReport = gameReport });
         }
 
         /// <summary>
@@ -449,6 +467,22 @@ namespace TChess2.View
                 ChessboardGrid.Children.Remove(moveHelper);
             }
             MoveHelpers.Clear();
+        }
+
+        /// <summary>
+        /// Called when the user clicked the resign button.
+        /// </summary>
+        /// <param name="e">Unused.</param>
+        private void OnResignClicked(EventResignClicked e)
+        {
+            //only if this is a GUI based player's turn to move
+            if(GameOngoing && WaitingForGuiMove)
+            {
+                //the current player resigns
+                CurrentGame.Resign(CurrentGame.WhoseTurn);
+                var report = GameStatusReport.CreateGameReport(CurrentGame, this);
+                OnGameOver(report);
+            }
         }
     }
 }

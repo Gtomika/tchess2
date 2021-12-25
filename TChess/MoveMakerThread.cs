@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using TChess2.Agents;
 using TChess2.Events;
 
@@ -36,10 +37,15 @@ namespace TChess2.TChess
                 //make move
                 Move move = agent.MakeMove(fen);
                 var hub = MessageHub.MessageHub.Instance;
-                //publish an event of this move
-                hub.Publish(new EventMoveMade {
-                    ChosenMove = move
-                });
+                //publish an event of this move ON THE MAIN THREAD
+
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    hub.Publish(new EventMoveMade
+                    {
+                        ChosenMove = move
+                    });
+                }));
             });
             moveMakerThread.Priority = ThreadPriority.AboveNormal;
             moveMakerThread.Name = $"{agent.Name} move maker thread";

@@ -11,6 +11,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -22,8 +23,13 @@
             <Image Source="{StaticResource imgFlipBoard}"/>
         </Button>
 
+        <Button x:Name="ButtonResign" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"
+                Grid.Column="2" Grid.Row="0" Margin="{StaticResource dimMargin}" Click="OnResignClicked">
+            <Image Source="{StaticResource imgResign}"/>
+        </Button>
+
         <Button x:Name="ButtonSettings" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"
-                Grid.Column="2" Grid.Row="0" Margin="{StaticResource dimMargin}">
+                Grid.Column="3" Grid.Row="0" Margin="{StaticResource dimMargin}" Click="OnSettingsClicked">
             <Image Source="{StaticResource imgSettings}"/>
         </Button>
 

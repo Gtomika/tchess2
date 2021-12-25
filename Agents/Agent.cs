@@ -37,5 +37,10 @@ namespace TChess2.Agents
         /// to enter moves) or not.
         /// </summary>
         public abstract bool IsHumanControlled();
+
+        /// <summary>
+        /// If this agent uses any resources, it should free them here.
+        /// </summary>
+        public abstract void CloseResources();
     }
 }

@@ -73,6 +73,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
       <Private>True</Private>
@@ -211,10 +212,20 @@
     <Compile Include="Agents\PlayerAgent.cs" />
     <Compile Include="Agents\StockfishAgent.cs" />
     <Compile Include="Events\EventBoardFlipped.cs" />
+    <Compile Include="Events\EventGameOver.cs" />
     <Compile Include="Events\EventGameStarted.cs" />
     <Compile Include="Events\EventMoveMade.cs" />
+    <Compile Include="Events\EventResignClicked.cs" />
     <Compile Include="Events\EventSelectedPlayerChanged.cs" />
     <Compile Include="Events\EventTimeControlChanged.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Stockfish\Core\IStockfish.cs" />
+    <Compile Include="Stockfish\Core\Stockfish.cs" />
+    <Compile Include="Stockfish\Core\StockfishProcess.cs" />
+    <Compile Include="Stockfish\Exceptions\MaxTriesException.cs" />
+    <Compile Include="Stockfish\Models\Color.cs" />
+    <Compile Include="Stockfish\Models\Evaluation.cs" />
+    <Compile Include="Stockfish\Models\Settings.cs" />
     <Compile Include="TChess\BoardFlip.cs" />
     <Compile Include="TChess\MoveMakerThread.cs" />
     <Compile Include="TChess\GameStatusReport.cs" />
@@ -236,8 +247,14 @@
     <Compile Include="View\GameLauncher.xaml.cs">
       <DependentUpon>GameLauncher.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\GameResultView.xaml.cs">
+      <DependentUpon>GameResultView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SettingsCornerView.xaml.cs">
       <DependentUpon>SettingsCornerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SettingsDialog.xaml.cs">
+      <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TimeControlView.xaml.cs">
       <DependentUpon>TimeControlView.xaml</DependentUpon>
@@ -286,7 +303,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\GameResultView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SettingsCornerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SettingsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -318,6 +343,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Stockfish\LICENSE" />
+    <None Include="Stockfish\README.md" />
+    <None Include="Stockfish\Stockfish.NET.csproj" />
+    <None Include="Stockfish\Stockfish.NET.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -360,6 +389,12 @@
   <ItemGroup>
     <Resource Include="Img\flip_board.png" />
     <Resource Include="Img\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\resign.png" />
+    <Resource Include="Img\black_king_check.png" />
+    <Resource Include="Img\white_king_check.png" />
+    <Content Include="Stockfish\.gitignore" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

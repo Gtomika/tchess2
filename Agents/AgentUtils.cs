@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessDotNet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,10 @@ namespace TChess2.Agents
         /// Finds the appropriate Agent for a name.
         /// </summary>
         /// <param name="name">The name, such as "Stockfish".</param>
+        /// <param name="player">Side of the agent.</param>
         /// <param name="control">Allows access to resources.</param>
         /// <returns>The agent with that name.</returns>
-        public static Agent AgentFromName(string name, UserControl control)
+        public static Agent AgentFromName(string name, Player player, UserControl control)
         {
             if(name.Equals((string)control.FindResource("strPlayer")))
             {
@@ -24,7 +26,7 @@ namespace TChess2.Agents
             } 
             else if(name.Equals((string)control.FindResource("strStockfish")))
             {
-                return new StockfishAgent(name);
+                return new StockfishAgent(name, player);
             } 
             else
             {
