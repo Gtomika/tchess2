@@ -27,6 +27,9 @@ namespace TChess2.View
         public GameLauncher()
         {
             InitializeComponent();
+            //subscribe to events
+            var hub = MessageHub.MessageHub.Instance;
+            hub.Subscribe<EventGameOver>(e => OnGameOver(e));
         }
 
         //white player
@@ -191,6 +194,15 @@ namespace TChess2.View
             ComboBoxBlack.IsEnabled = true;
             ComboBoxTimeControl.IsEnabled = true;
             ButtonStart.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Called when a game has ended.
+        /// </summary>
+        /// <param name="e">Event with details.</param>
+        private void OnGameOver(EventGameOver e)
+        {
+            UnlockControls();
         }
     }
 }

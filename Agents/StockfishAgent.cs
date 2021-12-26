@@ -21,20 +21,25 @@ namespace TChess2.Agents
         //The side stockfish is playing on.
         private Player Player;
 
+        //Depth Stockfish goes down to search moves.
+        private int Depth;
+
         public StockfishAgent(string name, Player player) : base(name)
         {
             Player = player;
             //launch stockfish
             var path = Properties.Settings.Default.StockfishPath;
-            Stockfish = new Stockfish.NET.Core.Stockfish(path);
+            //TODO: make this this set from the constructor
+            //Depth 15 is still incredibly fast
+            Depth = 15;
+            Stockfish = new Stockfish.NET.Core.Stockfish(path, Depth);
         }
 
         public override Move MakeMove(string fen)
         {
             Stockfish.SetFenPosition(fen);
-            //TODO: customize time
-            string move = Stockfish.GetBestMoveTime(2000);
-            Console.WriteLine("Move received from Stockfish: " + move);
+            string move = Stockfish.GetBestMove();
+            //Console.WriteLine("Move received from Stockfish: " + move);
             if(move.Length == 4)
             {
                 //this is not a promotion, such as "e2e4"

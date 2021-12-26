@@ -186,7 +186,7 @@ namespace TChess2.View
         /// </summary>
         /// <param name="game">The game.</param>
         /// <param name="boardFlip">Specifies if the board is flipped or not.</param>
-        private void DrawPieces(ChessGame game, TChess.BoardFlip boardFlip)
+        private void DrawPieces(ChessGame game, BoardFlip boardFlip)
         {
             //clear board of drawings
             RemoveAllPieceDrawings();
@@ -201,17 +201,17 @@ namespace TChess2.View
             //add drawings back
             for(int i = 0; i < 64; i++)
             {
-                Position pos = TChess.TChessUtils.PositionFromIndex(i);
+                Position pos = TChessUtils.PositionFromIndex(i);
                 Piece piece = game.GetPieceAt(pos);
                 if(piece != null)
                 {
                     //load image based on piece
-                    Image pieceImage = TChess.TChessUtils.GetImageOfPiece(piece, this, whiteInCheck, blackInCheck);
+                    Image pieceImage = TChessUtils.GetImageOfPiece(piece, this, whiteInCheck, blackInCheck);
                     //set position, depends on board flip
                     var gpos = TChessUtils.GridPositionFromIndex(i, boardFlip);
                     Grid.SetColumn(pieceImage, gpos.Item1);
                     Grid.SetRow(pieceImage, gpos.Item2);
-                    Grid.SetZIndex(pieceImage, 1);
+                    Grid.SetZIndex(pieceImage, 5);
                     //add image to grid.
                     ChessboardGrid.Children.Add(pieceImage);
                     //save image to be able to remove it later
@@ -256,6 +256,15 @@ namespace TChess2.View
             RemoveMoveHelpers();
             SelectedPosition = null;
             PieceSelected = false;
+            //the previous move displayers can suddenly get to invalid position
+            RemovePreviousMoveHelpers();
+            if(CurrentGame != null)
+            {
+                if(CurrentGame.Moves.Count > 0)
+                {
+                    DrawPreviousMoveHelpers(CurrentGame.Moves.Last());
+                }
+            }
         }
 
         /// <summary>
@@ -264,11 +273,15 @@ namespace TChess2.View
         /// <param name="e">Event with details.</param>
         private void OnGameStarted(EventGameStarted e)
         {
+            //remove everything, in case anything is shown
+            RemoveMoveHelpers();
+            RemovePreviousMoveHelpers();
+            //initialize new game
             GameOngoing = true;
             CurrentGame = new ChessGame();
             //setup board: initial setup of pieces
             DrawPieces(CurrentGame, BoardFlip);
-            //get agents.
+            //get agents
             WhiteAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, Player.White, this);
             BlackAgent = Agents.AgentUtils.AgentFromName(e.BlackName, Player.Black, this);
             //start the white agent
@@ -286,6 +299,9 @@ namespace TChess2.View
         /// <param name="e">Event with details.</param>
         private void OnMoveMade(EventMoveMade e)
         {
+            //remove previos move helpers, if they are present, cause they are outdated now
+            RemovePreviousMoveHelpers();
+            //check new move validity
             if(CurrentGame.IsValidMove(e.ChosenMove))
             {
                 //the agent made a valid move
@@ -300,6 +316,8 @@ namespace TChess2.View
                  * However, I avoid some nasty logic about castling and en passant.
                  */
                 DrawPieces(CurrentGame, BoardFlip);
+                //draw the previos move helpers
+                DrawPreviousMoveHelpers(e.ChosenMove);
                 //check if the game is over
                 var report = GameStatusReport.CreateGameReport(CurrentGame, this);
                 if(report.Status == GameStatus.ONGOING)
@@ -432,6 +450,10 @@ namespace TChess2.View
         /// <param name="moves">The moves.</param>
         private void DrawMoveHelpers(IReadOnlyCollection<Move> moves)
         {
+            if(!Properties.Settings.Default.ShowLegalMoves)
+            {
+                return; //user disabled showing legal moves, in other words the move helpers
+            }
             //semi transparent color for the move helpers
             var brush = new SolidColorBrush { Color = Color.FromArgb(175, 169, 169, 169) };
             foreach (Move move in moves)
@@ -449,7 +471,7 @@ namespace TChess2.View
                 };
                 Grid.SetColumn(moveHelper, gpos.Item1);
                 Grid.SetRow(moveHelper, gpos.Item2);
-                Grid.SetZIndex(moveHelper, 2); //above even pieces
+                Grid.SetZIndex(moveHelper, 10); //above everything, even pieces
                 //save
                 MoveHelpers.Add(moveHelper);
                 //add to grid
@@ -482,6 +504,75 @@ namespace TChess2.View
                 CurrentGame.Resign(CurrentGame.WhoseTurn);
                 var report = GameStatusReport.CreateGameReport(CurrentGame, this);
                 OnGameOver(report);
+            }
+        }
+
+        //stores the currently displayed previous move helper rectangles
+        private Rectangle[] PreviousMoveHelpers;
+
+        /// <summary>
+        /// Draws 2 rectangles to the start and finish square of the given move.
+        /// </summary>
+        /// <param name="move">The move.</param>
+        private void DrawPreviousMoveHelpers(Move move)
+        {
+            if(!Properties.Settings.Default.ShowPreviousMove)
+            {
+                return; //this user disabled this
+            }
+            if(PreviousMoveHelpers == null)
+            {
+                PreviousMoveHelpers = new Rectangle[2];
+            }
+            //semi transparent yellow
+            var brush = new SolidColorBrush { Color = Color.FromArgb(120, 240, 230, 140) };
+            //get grid position of start square
+            var gposStart = TChessUtils.GridPositionFromPosition(move.OriginalPosition, BoardFlip);
+            //get grid position of destination square
+            var gposEnd = TChessUtils.GridPositionFromPosition(move.NewPosition, BoardFlip);
+
+            //create the rectangles
+            var startHelper = new Rectangle
+            {
+                IsHitTestVisible = false, //allow click through
+                Fill = brush,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            var endHelper = new Rectangle
+            {
+                IsHitTestVisible = false, //allow click through
+                Fill = brush,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+
+            //set grid properties
+            Grid.SetColumn(startHelper, gposStart.Item1);
+            Grid.SetRow(startHelper, gposStart.Item2);
+            Grid.SetZIndex(startHelper, 1);
+            Grid.SetColumn(endHelper, gposEnd.Item1);
+            Grid.SetRow(endHelper, gposEnd.Item2);
+            Grid.SetZIndex(endHelper, 1);
+            //save and add them
+            PreviousMoveHelpers[0] = startHelper;
+            PreviousMoveHelpers[1] = endHelper;
+            ChessboardGrid.Children.Add(startHelper);
+            ChessboardGrid.Children.Add(endHelper);
+        }
+
+        private void RemovePreviousMoveHelpers()
+        {
+            if(PreviousMoveHelpers != null)
+            {
+                if(PreviousMoveHelpers[0] != null)
+                {
+                    ChessboardGrid.Children.Remove(PreviousMoveHelpers[0]);
+                }
+                if (PreviousMoveHelpers[1] != null)
+                {
+                    ChessboardGrid.Children.Remove(PreviousMoveHelpers[1]);
+                }
             }
         }
     }

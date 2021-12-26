@@ -101,7 +101,7 @@ namespace TChess2.TChess
             switch (piece.GetFenCharacter())
             {
                 case 'K':
-                    if(whiteInCheck)
+                    if(whiteInCheck && Properties.Settings.Default.ShowChecks)
                     {
                         bitmap = (BitmapImage)control.FindResource("imgWhiteKingCheck");
                     } else
@@ -110,7 +110,7 @@ namespace TChess2.TChess
                     }
                     break;
                 case 'k':
-                    if (blackInCheck)
+                    if (blackInCheck && Properties.Settings.Default.ShowChecks)
                     {
                         bitmap = (BitmapImage)control.FindResource("imgBlackKingCheck");
                     }

@@ -48,6 +48,23 @@
                             Margin="{StaticResource dimMargin}"/>
                     </WrapPanel>
                 </Grid>
+
+                <TextBlock Text="{StaticResource strGamePreferences}" Padding="{StaticResource dimPadding}" 
+                           FontSize="{StaticResource dimFont}" Grid.Column="0" Grid.Row="0"/>
+                <WrapPanel>
+                    <TextBlock Text="{StaticResource strShowLegalMoves}" Padding="{StaticResource dimPadding}"/>
+                    <CheckBox VerticalAlignment="Center" x:Name="CheckBoxShowLegalMoves" Checked="OnShowLegalChanged" Unchecked="OnShowLegalChanged"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <TextBlock Text="{StaticResource strShowPreviousMove}" Padding="{StaticResource dimPadding}"/>
+                    <CheckBox VerticalAlignment="Center" x:Name="CheckBoxShowPreviousMove" Checked="OnShowPreviousChanged" Unchecked="OnShowPreviousChanged"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <TextBlock Text="{StaticResource strShowCheck}" Padding="{StaticResource dimPadding}"/>
+                    <CheckBox VerticalAlignment="Center" x:Name="CheckBoxShowChecks" Checked="OnShowChecksChanged" Unchecked="OnShowChecksChanged"/>
+                </WrapPanel>
+
+
             </StackPanel>
             
             <!-- For close button. -->

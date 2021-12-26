@@ -67,5 +67,41 @@ namespace TChess2.Properties {
                 this["DarkSquareColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowLegalMoves {
+            get {
+                return ((bool)(this["ShowLegalMoves"]));
+            }
+            set {
+                this["ShowLegalMoves"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowPreviousMove {
+            get {
+                return ((bool)(this["ShowPreviousMove"]));
+            }
+            set {
+                this["ShowPreviousMove"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowChecks {
+            get {
+                return ((bool)(this["ShowChecks"]));
+            }
+            set {
+                this["ShowChecks"] = value;
+            }
+        }
     }
 }

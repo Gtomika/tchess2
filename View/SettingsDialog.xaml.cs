@@ -25,6 +25,10 @@ namespace TChess2.View
             InitializeComponent();
             //load stockfish path if exists
             TextBlockStockfishPath.Text = Properties.Settings.Default.StockfishPath;
+            //set game preferences from settings file
+            CheckBoxShowLegalMoves.IsChecked = Properties.Settings.Default.ShowLegalMoves;
+            CheckBoxShowPreviousMove.IsChecked = Properties.Settings.Default.ShowPreviousMove;
+            CheckBoxShowChecks.IsChecked = Properties.Settings.Default.ShowChecks;
         }
 
         private void OnSelectStockfishClicked(object sender, RoutedEventArgs e)
@@ -81,11 +85,30 @@ namespace TChess2.View
             Close();
         }
 
+        //when stockfish path is cleared.
         private void OnClearSelectionClicked(object sender, RoutedEventArgs e)
         {
             TextBlockStockfishPath.Text = "";
             Properties.Settings.Default.StockfishPath = "";
             TextBlockTestResult.Text = "";
+        }
+
+        //when show legal moves is checked/unchecked
+        private void OnShowLegalChanged(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.ShowLegalMoves = (bool)CheckBoxShowLegalMoves.IsChecked;
+        }
+
+        //when show previous move is checked/unchecked
+        private void OnShowPreviousChanged(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.ShowPreviousMove = (bool)CheckBoxShowPreviousMove.IsChecked;
+        }
+
+        //when show checks is checked/unchecked
+        private void OnShowChecksChanged(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.ShowChecks = (bool)CheckBoxShowChecks.IsChecked;
         }
     }
 }

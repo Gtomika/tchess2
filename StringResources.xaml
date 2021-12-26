@@ -58,6 +58,10 @@
     <system:String x:Key="strEngineNotSelected">Not selected</system:String>
     <system:String x:Key="strCloseSettings">Close settings</system:String>
     <system:String x:Key="strConfirmResign">Are you sure you want to resign?</system:String>
+    <system:String x:Key="strGamePreferences">Game preferences</system:String>
+    <system:String x:Key="strShowLegalMoves">Show legal moves</system:String>
+    <system:String x:Key="strShowPreviousMove">Show previous move</system:String>
+    <system:String x:Key="strShowCheck">Show checks</system:String>
     
     <!-- Game result view -->
     <system:String x:Key="strGameResult">Game result</system:String>

@@ -6,7 +6,7 @@
         xmlns:userControl="clr-namespace:TChess2.View"
         xmlns:local="clr-namespace:TChess2"
         mc:Ignorable="d"
-        Title="TChess 2" Height="1000" Width="1200" FontSize="18" Background="Gray" Closing="OnAppClosing">
+        Title="TChess 2" Height="1000" Width="1200" FontSize="18" Background="Gray" Closing="OnAppClosing" Initialized="OnInitialized">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="20"/>

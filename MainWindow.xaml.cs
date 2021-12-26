@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TChess2.TChess;
 
 namespace TChess2
 {
@@ -31,6 +32,12 @@ namespace TChess2
         private void OnAppClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Properties.Settings.Default.Save();
+        }
+
+        private void OnInitialized(object sender, EventArgs e)
+        {
+            //MoveVoicer mv = new MoveVoicer();
+            //mv.PrintVoices();
         }
     }
 }
