@@ -24,10 +24,22 @@ namespace TChess2.Agents
             {
                 return new PlayerAgent(name);
             } 
-            else if(name.Equals((string)control.FindResource("strStockfish")))
+            else if(name.Equals((string)control.FindResource("strStockfish5")))
             {
-                return new StockfishAgent(name, player);
-            } 
+                return new StockfishAgent(name, player, 5);
+            }
+            else if (name.Equals((string)control.FindResource("strStockfish10")))
+            {
+                return new StockfishAgent(name, player, 10);
+            }
+            else if (name.Equals((string)control.FindResource("strStockfish15")))
+            {
+                return new StockfishAgent(name, player, 15);
+            }
+            else if (name.Equals((string)control.FindResource("strStockfish20")))
+            {
+                return new StockfishAgent(name, player, 20);
+            }
             else
             {
                 throw new ArgumentException(name + " is not a valid agent name!");

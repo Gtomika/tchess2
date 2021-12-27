@@ -24,14 +24,14 @@ namespace TChess2.Agents
         //Depth Stockfish goes down to search moves.
         private int Depth;
 
-        public StockfishAgent(string name, Player player) : base(name)
+        public StockfishAgent(string name, Player player, int depth) : base(name)
         {
             Player = player;
             //launch stockfish
             var path = Properties.Settings.Default.StockfishPath;
             //TODO: make this this set from the constructor
             //Depth 15 is still incredibly fast
-            Depth = 15;
+            Depth = depth;
             Stockfish = new Stockfish.NET.Core.Stockfish(path, Depth);
         }
 

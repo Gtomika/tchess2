@@ -13,7 +13,7 @@ namespace Stockfish.NET.Core
         /// <summary>
         /// 
         /// </summary>
-        private const int MAX_TRIES = 200;
+        private const int MAX_TRIES = 500;
 
         /// <summary>
         /// 
@@ -288,13 +288,8 @@ namespace Stockfish.NET.Core
         public string GetBestMove()
         {
             go();
-            var tries = 0;
             while (true)
             {
-                if (tries > MAX_TRIES)
-                {
-                    throw new MaxTriesException();
-                }
 
                 var data = readLineAsList();
 
@@ -307,8 +302,6 @@ namespace Stockfish.NET.Core
 
                     return data[1];
                 }
-
-                tries++;
             }
         }
 
@@ -321,13 +314,8 @@ namespace Stockfish.NET.Core
         public string GetBestMoveTime(int time = 1000)
         {
             goTime(time);
-            var tries = 0;
             while (true)
             {
-                if (tries > MAX_TRIES)
-                {
-                    throw new MaxTriesException();
-                }
 
                 var data = readLineAsList();
                 if (data[0] == "bestmove")

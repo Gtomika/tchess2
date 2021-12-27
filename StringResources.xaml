@@ -13,7 +13,10 @@
     <system:String x:Key="strWhite">White</system:String>
     <system:String x:Key="strBlack">Black</system:String>
     <system:String x:Key="strPlayer">Player</system:String>
-    <system:String x:Key="strStockfish">Stockfish</system:String>
+    <system:String x:Key="strStockfish5">Stockfish (depth 5)</system:String>
+    <system:String x:Key="strStockfish10">Stockfish (depth 10)</system:String>
+    <system:String x:Key="strStockfish15">Stockfish (depth 15)</system:String>
+    <system:String x:Key="strStockfish20">Stockfish (depth 20)</system:String>
     <system:String x:Key="strTimeControl">Time control</system:String>
     <system:String x:Key="strClassical1h">Classical (1 hour)</system:String>
     <system:String x:Key="strClassical30m">Classical (30 minutes)</system:String>
@@ -46,6 +49,7 @@
     <system:String x:Key="strRepetition">Move repetition</system:String>
     <system:String x:Key="strResignation">Resignation</system:String>
     <system:String x:Key="strFiftyMoveRule">50 move rule</system:String>
+    <system:String x:Key="strTimeOut">Time ran out</system:String>
     
     <!-- Settings. -->
     <system:String x:Key="strSettings">TChess 2 Settings</system:String>
@@ -62,6 +66,8 @@
     <system:String x:Key="strShowLegalMoves">Show legal moves</system:String>
     <system:String x:Key="strShowPreviousMove">Show previous move</system:String>
     <system:String x:Key="strShowCheck">Show checks</system:String>
+    <system:String x:Key="strPlayMoveSounds">Play move sounds</system:String>
+    <system:String x:Key="strVoiceMoves">Voice computer moves</system:String>
     
     <!-- Game result view -->
     <system:String x:Key="strGameResult">Game result</system:String>

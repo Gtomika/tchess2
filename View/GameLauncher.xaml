@@ -28,7 +28,10 @@
             <ComboBox x:Name="ComboBoxWhite" MinWidth="{StaticResource dimDefaultWidth}" Grid.Column="1" Grid.Row="0"
                   Margin="{StaticResource dimMargin}" SelectionChanged="ComboBoxWhiteChanged" SelectedValuePath="Content">
                 <ComboBoxItem Content="{StaticResource strPlayer}"/>
-                <ComboBoxItem Content="{StaticResource strStockfish}"/>
+                <ComboBoxItem Content="{StaticResource strStockfish5}"/>
+                <ComboBoxItem Content="{StaticResource strStockfish10}"/>
+                <ComboBoxItem Content="{StaticResource strStockfish15}"/>
+                <ComboBoxItem Content="{StaticResource strStockfish20}"/>
             </ComboBox>
 
             <TextBlock Text="{StaticResource strBlack}" Grid.Column="0" Grid.Row="1"
@@ -36,7 +39,10 @@
             <ComboBox x:Name="ComboBoxBlack" MinWidth="{StaticResource dimDefaultWidth}" Grid.Column="1" Grid.Row="1"
                   Margin="{StaticResource dimMargin}" SelectionChanged="ComboBoxBlackChanged" SelectedValuePath="Content">
                 <ComboBoxItem Content="{StaticResource strPlayer}"/>
-                <ComboBoxItem Content="{StaticResource strStockfish}"/>
+                <ComboBoxItem Content="{StaticResource strStockfish5}"/>
+                <ComboBoxItem Content="{StaticResource strStockfish10}"/>
+                <ComboBoxItem Content="{StaticResource strStockfish15}"/>
+                <ComboBoxItem Content="{StaticResource strStockfish20}"/>
             </ComboBox>
 
             <TextBlock Text="{StaticResource strTimeControl}" Grid.Column="0" Grid.Row="2"

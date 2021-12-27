@@ -25,7 +25,7 @@ namespace TChess2.TChess
     public class GameStatusReport
     {
 
-        private GameStatusReport(GameStatus status, string reason)
+        public GameStatusReport(GameStatus status, string reason)
         {
             Status = status;
             Reason = reason;

@@ -103,5 +103,29 @@ namespace TChess2.Properties {
                 this["ShowChecks"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PlayMoveSounds {
+            get {
+                return ((bool)(this["PlayMoveSounds"]));
+            }
+            set {
+                this["PlayMoveSounds"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool VoiceComputerMoves {
+            get {
+                return ((bool)(this["VoiceComputerMoves"]));
+            }
+            set {
+                this["VoiceComputerMoves"] = value;
+            }
+        }
     }
 }

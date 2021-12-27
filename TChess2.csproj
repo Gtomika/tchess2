@@ -219,6 +219,7 @@
     <Compile Include="Events\EventResignClicked.cs" />
     <Compile Include="Events\EventSelectedPlayerChanged.cs" />
     <Compile Include="Events\EventTimeControlChanged.cs" />
+    <Compile Include="Events\EventTimeOut.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Stockfish\Core\IStockfish.cs" />
     <Compile Include="Stockfish\Core\Stockfish.cs" />
@@ -228,6 +229,7 @@
     <Compile Include="Stockfish\Models\Evaluation.cs" />
     <Compile Include="Stockfish\Models\Settings.cs" />
     <Compile Include="TChess\BoardFlip.cs" />
+    <Compile Include="TChess\ChessSoundPlayer.cs" />
     <Compile Include="TChess\MoveMakerThread.cs" />
     <Compile Include="TChess\GameStatusReport.cs" />
     <Compile Include="TChess\MoveVoicer.cs" />
@@ -396,6 +398,9 @@
     <Resource Include="Img\resign.png" />
     <Resource Include="Img\black_king_check.png" />
     <Resource Include="Img\white_king_check.png" />
+    <Resource Include="Sounds\capture.wav" />
+    <Resource Include="Sounds\check.wav" />
+    <Resource Include="Sounds\move.wav" />
     <Content Include="Stockfish\.gitignore" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

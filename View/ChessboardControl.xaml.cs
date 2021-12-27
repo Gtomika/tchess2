@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ChessDotNet;
+using ChessDotNet.Pieces;
 using TChess2;
 using TChess2.Agents;
 using TChess2.Events;
@@ -47,9 +48,12 @@ namespace TChess2.View
             hub.Subscribe<EventGameStarted>(e => OnGameStarted(e));
             hub.Subscribe<EventMoveMade>(e => OnMoveMade(e));
             hub.Subscribe<EventResignClicked>(e => OnResignClicked(e));
+            hub.Subscribe<EventTimeOut>(e => OnTimeOut(e));
             //some initialization
             GameOngoing = false;
             WaitingForGuiMove = false;
+            ChessSoundPlayer = new ChessSoundPlayer();
+            MoveVoicer = new MoveVoicer();
         }
 
         //Rectangles that are the backgrounds of each square on the board.
@@ -87,6 +91,12 @@ namespace TChess2.View
         /// This agent plays for black. Set when a game is started.
         /// </summary>
         public Agent BlackAgent { get; set; }
+
+        //plays move sounds
+        private ChessSoundPlayer ChessSoundPlayer;
+
+        //says moves out loud
+        private MoveVoicer MoveVoicer;
 
         /// <summary>
         /// Creates and stores the rectangles that are the backgrounds of the squares.
@@ -239,6 +249,7 @@ namespace TChess2.View
         /// <param name="e">Board flipped event.</param>
         private void OnBoardFlipped(EventBoardFlipped e)
         {
+            
             BoardFlip = BoardFlip == TChess.BoardFlip.NORMAL ?
                 TChess.BoardFlip.FLIPPED : TChess.BoardFlip.NORMAL;
             //flip board: redraw squares and rank, file names
@@ -282,8 +293,8 @@ namespace TChess2.View
             //setup board: initial setup of pieces
             DrawPieces(CurrentGame, BoardFlip);
             //get agents
-            WhiteAgent = Agents.AgentUtils.AgentFromName(e.WhiteName, Player.White, this);
-            BlackAgent = Agents.AgentUtils.AgentFromName(e.BlackName, Player.Black, this);
+            WhiteAgent = AgentUtils.AgentFromName(e.WhiteName, Player.White, this);
+            BlackAgent = AgentUtils.AgentFromName(e.BlackName, Player.Black, this);
             //start the white agent
             if (WhiteAgent.IsHumanControlled())
             {
@@ -299,6 +310,11 @@ namespace TChess2.View
         /// <param name="e">Event with details.</param>
         private void OnMoveMade(EventMoveMade e)
         {
+            //maybe the game already ended with a time out, but this move came in late
+            if(!GameOngoing)
+            {
+                return;
+            }
             //remove previos move helpers, if they are present, cause they are outdated now
             RemovePreviousMoveHelpers();
             //check new move validity
@@ -308,8 +324,12 @@ namespace TChess2.View
                 PieceSelected = false;
                 WaitingForGuiMove = false;
                 SelectedPosition = null;
+
+                //save the piece that moved
+                Piece pieceThatMoved = CurrentGame.GetPieceAt(e.ChosenMove.OriginalPosition);
+
                 //play the move in the game object
-                CurrentGame.MakeMove(e.ChosenMove, alreadyValidated:true);
+                MoveType moveType = CurrentGame.MakeMove(e.ChosenMove, alreadyValidated:true);
                 /*
                  * update the board. This is not very effective, as it 
                  * updates the whole board, even though only a few squares changed.
@@ -318,6 +338,13 @@ namespace TChess2.View
                 DrawPieces(CurrentGame, BoardFlip);
                 //draw the previos move helpers
                 DrawPreviousMoveHelpers(e.ChosenMove);
+
+                //play a sound for this move (if needed)
+                PlayMoveSound(moveType);
+
+                //voice this move (if needed)
+                VoiceMove(e.ChosenMove, pieceThatMoved, moveType);
+
                 //check if the game is over
                 var report = GameStatusReport.CreateGameReport(CurrentGame, this);
                 if(report.Status == GameStatus.ONGOING)
@@ -410,7 +437,11 @@ namespace TChess2.View
                 if(GameOngoing && WaitingForGuiMove)
                 {
                     var piece = CurrentGame.GetPieceAt(pos);
-                    if (piece != null && piece.Owner == CurrentGame.WhoseTurn && pos != SelectedPosition)
+                    var selectedPiece = CurrentGame.GetPieceAt(SelectedPosition);
+                    bool canCastle = CurrentGame.WhoseTurn == Player.White ? (CurrentGame.CanWhiteCastleKingSide || CurrentGame.CanWhiteCastleQueenSide)
+                           : (CurrentGame.CanBlackCastleKingSide || CurrentGame.CanBlackCastleQueenSide);
+                    bool possibleCastle = (selectedPiece is King) && (piece is Rook) && canCastle;
+                    if (piece != null && piece.Owner == CurrentGame.WhoseTurn && pos != SelectedPosition && !possibleCastle)
                     {
                         //user has another piece on this square, which means he reconsidered and wants to make 
                         //a move now with this piece instead
@@ -439,6 +470,40 @@ namespace TChess2.View
                 }
             }
           
+        }
+
+        /// <summary>
+        /// Plays a sound depending on the move made.
+        /// </summary>
+        /// <param name="moveType">Type of the move.</param>
+        private void PlayMoveSound(MoveType moveType)
+        {
+            if(!Properties.Settings.Default.PlayMoveSounds)
+            {
+                return; //user disabled playing sounds
+            }
+            bool check = CurrentGame.IsInCheck(CurrentGame.WhoseTurn);
+            if(check)
+            {
+                ChessSoundPlayer.PlayCheckSound();
+            } else if(moveType.HasFlag(MoveType.Capture))
+            {
+                ChessSoundPlayer.PlayCaptureSound();
+            } else
+            {
+                ChessSoundPlayer.PlayMoveSound();
+            }
+        }
+
+        private void VoiceMove(Move move, Piece pieceThatMoved, MoveType moveType)
+        {
+            var agentWhoPlayedThisMove = CurrentGame.WhoseTurn == Player.White ? BlackAgent : WhiteAgent;
+            if(!agentWhoPlayedThisMove.IsHumanControlled() && Properties.Settings.Default.VoiceComputerMoves)
+            {
+                //this is a computer agent and voicing moves is turned on
+                string san = CurrentGame.Moves.Last().SAN;
+                MoveVoicer.VoiceMove(san, move, pieceThatMoved, moveType);
+            }
         }
 
         //stores the currently displayed move helpers.
@@ -561,6 +626,7 @@ namespace TChess2.View
             ChessboardGrid.Children.Add(endHelper);
         }
 
+        //deletes the previos move helper rectangles
         private void RemovePreviousMoveHelpers()
         {
             if(PreviousMoveHelpers != null)
@@ -574,6 +640,22 @@ namespace TChess2.View
                     ChessboardGrid.Children.Remove(PreviousMoveHelpers[1]);
                 }
             }
+        }
+
+        /// <summary>
+        /// Called when a side times out.
+        /// </summary>
+        /// <param name="e">Event with details.</param>
+        private void OnTimeOut(EventTimeOut e)
+        {
+            //build report of time out
+            var report = new GameStatusReport
+            (
+                e.PlayerWhoTimedOut == Player.White ? GameStatus.BLACK_WINS : GameStatus.WHITE_WINS,
+                (string)FindResource("strTimeOut")
+            );
+            //call game over
+            OnGameOver(report);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessDotNet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,10 +39,14 @@ namespace TChess2.TChess
         /// Gets time as a formatted string.
         /// <param name="side">The side whose time will be returned.</param>
         /// </summary>
-        public string GetTimeString(Side side)
+        public string GetTimeString(Player side)
         {
+            if(IsTimedOut(side))
+            {
+                return "00:00:00";
+            }
             string timeString;
-            long seconds = (side == Side.WHITE) ? (WhiteTime / 1000) : (BlackTime / 1000);
+            long seconds = (side == Player.White) ? (WhiteTime / 1000) : (BlackTime / 1000);
             //calculate hours and remove from time
             long hours = seconds / 3600;
             seconds = seconds - hours * 3600;
@@ -57,6 +62,38 @@ namespace TChess2.TChess
                 timeString = $"{hours.ToString().PadLeft(2, '0')}:{minutes.ToString().PadLeft(2, '0')}:{seconds.ToString().PadLeft(2, '0')}";
             }
             return timeString;
+        }
+
+        /// <summary>
+        /// Removes time from one side.
+        /// </summary>
+        /// <param name="side">The side who will get time removed.</param>
+        /// <param name="time">The amount of time in milliseconds.</param>
+        public void RemoveTime(Player side, int time)
+        {
+            if(side == Player.White)
+            {
+                WhiteTime -= time;
+            } else
+            {
+                BlackTime -= time;
+            }
+        }
+
+        /// <summary>
+        /// Checks if a side has timed out.
+        /// </summary>
+        /// <param name="side">The side to be checked.</param>
+        public bool IsTimedOut(Player side)
+        {
+            if (side == Player.White)
+            {
+                return WhiteTime <= 0;
+            }
+            else
+            {
+                return BlackTime <= 0;
+            }
         }
 
         /// <summary>

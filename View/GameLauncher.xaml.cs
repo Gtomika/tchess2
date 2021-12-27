@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using TChess2.TChess;
 using MessageHub;
 using TChess2.Events;
+using ChessDotNet;
 
 namespace TChess2.View
 {
@@ -52,12 +53,12 @@ namespace TChess2.View
             //time
             if (timeControl.WhiteTime == timeControl.BlackTime)
             {
-                desc += $"Both players have {timeControl.GetTimeString(Side.WHITE)} time.\n";
+                desc += $"Both players have {timeControl.GetTimeString(Player.White)} time.\n";
             }
             else
             {
-                desc += $"White has {timeControl.GetTimeString(Side.WHITE)} time.\n" +
-                    $"Black has {timeControl.GetTimeString(Side.BLACK)} time.\n";
+                desc += $"White has {timeControl.GetTimeString(Player.White)} time.\n" +
+                    $"Black has {timeControl.GetTimeString(Player.Black)} time.\n";
             }
             //increment
             if (timeControl.Increment == 0)
@@ -152,9 +153,8 @@ namespace TChess2.View
                 return;
             }
             //if stockfish was selected, verify that user has chosen stockfish path
-            string stockfishName = (string)FindResource("strStockfish");
             string stockfishPath = Properties.Settings.Default.StockfishPath;
-            if((WhiteSelection==stockfishName || BlackSelection==stockfishName) && stockfishPath == "")
+            if((WhiteSelection.Contains("Stockfish") || BlackSelection.Contains("Stockfish")) && stockfishPath == "")
             {
                 string message = (string)FindResource("strStockfishLauncherError");
                 MessageBox.Show(message, error, MessageBoxButton.OK, MessageBoxImage.Error);

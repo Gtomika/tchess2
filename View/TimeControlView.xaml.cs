@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ChessDotNet;
 using MessageHub;
 using TChess2.Events;
 using TChess2.TChess;
@@ -38,15 +40,19 @@ namespace TChess2.View
 
             //subscribe to events
             var hub = MessageHub.MessageHub.Instance;
-            hub.Subscribe<EventSelectedPlayerChanged>(e =>
-                OnSelectedPlayerChanged(e));
+            hub.Subscribe<EventSelectedPlayerChanged>(e => OnSelectedPlayerChanged(e));
 
-            hub.Subscribe<EventTimeControlChanged>(e =>
-                OnTimeControlChanged(e));
+            hub.Subscribe<EventTimeControlChanged>(e => OnTimeControlChanged(e));
 
-            hub.Subscribe<EventGameStarted>(e =>
-                OnGameStarted(e));
+            hub.Subscribe<EventGameStarted>(e => OnGameStarted(e));
+
+            hub.Subscribe<EventMoveMade>(e => OnMoveMade(e));
+
+            hub.Subscribe<EventGameOver>(e => OnGameOver(e));
         }
+
+        //amount of time between timer ticks
+        private static readonly int INTERVAL = 500;
 
         public TimeControl GameTimeControl { get; set; }
         
@@ -57,6 +63,12 @@ namespace TChess2.View
         public string WhiteTimeString { get; set; }
 
         public string BlackTimeString { get; set; }
+
+        //counts time
+        public Timer GameTimer;
+
+        //stores whose time is currently ticking
+        private Player CurrentPlayer;
 
         /// <summary>
         /// Called when the selected player was changed. This is called 
@@ -86,8 +98,8 @@ namespace TChess2.View
         private void OnTimeControlChanged(EventTimeControlChanged e)
         {
             //preview the selected time control
-            WhiteTimeString = e.SelectedTimeControl.GetTimeString(Side.WHITE);
-            BlackTimeString = e.SelectedTimeControl.GetTimeString(Side.BLACK);
+            WhiteTimeString = e.SelectedTimeControl.GetTimeString(Player.White);
+            BlackTimeString = e.SelectedTimeControl.GetTimeString(Player.Black);
             TextBlockWhiteTime.Text = WhiteTimeString;
             TextBlockBlackTime.Text = BlackTimeString;
         }
@@ -100,8 +112,8 @@ namespace TChess2.View
         {
             //save data
             GameTimeControl = e.GameTimeControl;
-            WhiteTimeString = e.GameTimeControl.GetTimeString(Side.WHITE);
-            BlackTimeString = e.GameTimeControl.GetTimeString(Side.BLACK);
+            WhiteTimeString = e.GameTimeControl.GetTimeString(Player.White);
+            BlackTimeString = e.GameTimeControl.GetTimeString(Player.Black);
             WhiteName = e.WhiteName;
             BlackName = e.BlackName;
             //set UI elements
@@ -109,7 +121,64 @@ namespace TChess2.View
             TextBlockBlackName.Text = BlackName;
             TextBlockWhiteTime.Text = WhiteTimeString;
             TextBlockBlackTime.Text = BlackTimeString;
-            //TODO: start counting white time
+            //initialize timer
+            CurrentPlayer = Player.White;
+            GameTimer = new Timer
+            {
+                Interval = INTERVAL //update every this much milliseconds
+            };
+            GameTimer.Elapsed += new ElapsedEventHandler(OnCountDownTimeElapsed);
+            GameTimer.Start();
         }
+
+        //called when the timer completes an interval
+        private void OnCountDownTimeElapsed(object source, ElapsedEventArgs e)
+        {
+            //call this on the MAIN thread
+            Application.Current.Dispatcher.Invoke(new Action(() => {
+                //remove time from the current player
+                GameTimeControl.RemoveTime(CurrentPlayer, INTERVAL);
+                //update UI
+                if (CurrentPlayer == Player.White)
+                {
+                    WhiteTimeString = GameTimeControl.GetTimeString(CurrentPlayer);
+                    TextBlockWhiteTime.Text = WhiteTimeString;
+                }
+                else
+                {
+                    BlackTimeString = GameTimeControl.GetTimeString(CurrentPlayer);
+                    TextBlockBlackTime.Text = BlackTimeString;
+                }
+                //check if they have time
+                if (GameTimeControl.IsTimedOut(CurrentPlayer))
+                {
+                    //this player timed out, publish an event of this
+                    var hub = MessageHub.MessageHub.Instance;
+                    hub.Publish(new EventTimeOut
+                    {
+                        PlayerWhoTimedOut = CurrentPlayer
+                    });
+                }
+            }));
+        }
+
+        /// <summary>
+        /// Called when a side has made their move. Starts counting the other sides time.
+        /// </summary>
+        /// <param name="e">Event with the details.</param>
+        private void OnMoveMade(EventMoveMade e)
+        {
+            CurrentPlayer = ChessUtilities.GetOpponentOf(CurrentPlayer);
+        }
+
+        //called when game is over, stops counter
+        private void OnGameOver(EventGameOver e)
+        {
+            if (GameTimer != null)
+            {
+                GameTimer.Stop();
+            }
+        }
+
     }
 }

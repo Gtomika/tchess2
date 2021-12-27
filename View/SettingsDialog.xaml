@@ -63,6 +63,14 @@
                     <TextBlock Text="{StaticResource strShowCheck}" Padding="{StaticResource dimPadding}"/>
                     <CheckBox VerticalAlignment="Center" x:Name="CheckBoxShowChecks" Checked="OnShowChecksChanged" Unchecked="OnShowChecksChanged"/>
                 </WrapPanel>
+                <WrapPanel>
+                    <TextBlock Text="{StaticResource strPlayMoveSounds}" Padding="{StaticResource dimPadding}"/>
+                    <CheckBox VerticalAlignment="Center" x:Name="CheckBoxPlaySounds" Checked="OnPlaySoundsChanged" Unchecked="OnPlaySoundsChanged"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <TextBlock Text="{StaticResource strVoiceMoves}" Padding="{StaticResource dimPadding}"/>
+                    <CheckBox VerticalAlignment="Center" x:Name="CheckBoxVoiceMoves" Checked="OnVoiceMovesChanged" Unchecked="OnVoiceMovesChanged"/>
+                </WrapPanel>
 
 
             </StackPanel>

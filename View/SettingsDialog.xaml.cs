@@ -29,6 +29,8 @@ namespace TChess2.View
             CheckBoxShowLegalMoves.IsChecked = Properties.Settings.Default.ShowLegalMoves;
             CheckBoxShowPreviousMove.IsChecked = Properties.Settings.Default.ShowPreviousMove;
             CheckBoxShowChecks.IsChecked = Properties.Settings.Default.ShowChecks;
+            CheckBoxPlaySounds.IsChecked = Properties.Settings.Default.PlayMoveSounds;
+            CheckBoxVoiceMoves.IsChecked = Properties.Settings.Default.VoiceComputerMoves;
         }
 
         private void OnSelectStockfishClicked(object sender, RoutedEventArgs e)
@@ -110,5 +112,15 @@ namespace TChess2.View
         {
             Properties.Settings.Default.ShowChecks = (bool)CheckBoxShowChecks.IsChecked;
         }
+        private void OnPlaySoundsChanged(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PlayMoveSounds = (bool)CheckBoxPlaySounds.IsChecked;
+        }
+
+        private void OnVoiceMovesChanged(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.VoiceComputerMoves = (bool)CheckBoxVoiceMoves.IsChecked;
+        }
+
     }
 }
