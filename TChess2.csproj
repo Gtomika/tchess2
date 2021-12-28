@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>tchess_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ChessDotNet, Version=0.12.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\ChessDotNet.0.12.3\lib\netstandard1.3\ChessDotNet.dll</HintPath>
@@ -213,6 +216,7 @@
     <Compile Include="Agents\PlayerAgent.cs" />
     <Compile Include="Agents\StockfishAgent.cs" />
     <Compile Include="Events\EventBoardFlipped.cs" />
+    <Compile Include="Events\EventMoveSan.cs" />
     <Compile Include="Events\EventGameOver.cs" />
     <Compile Include="Events\EventGameStarted.cs" />
     <Compile Include="Events\EventMoveMade.cs" />
@@ -253,6 +257,15 @@
     </Compile>
     <Compile Include="View\GameResultView.xaml.cs">
       <DependentUpon>GameResultView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MoveElementView.xaml.cs">
+      <DependentUpon>MoveElementView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MoveListView.xaml.cs">
+      <DependentUpon>MoveListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PromotionDialog.xaml.cs">
+      <DependentUpon>PromotionDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SettingsCornerView.xaml.cs">
       <DependentUpon>SettingsCornerView.xaml</DependentUpon>
@@ -308,6 +321,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\GameResultView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MoveElementView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MoveListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PromotionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -395,6 +420,7 @@
     <Resource Include="Img\settings.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="tchess_icon.ico" />
     <Resource Include="Img\resign.png" />
     <Resource Include="Img\black_king_check.png" />
     <Resource Include="Img\white_king_check.png" />

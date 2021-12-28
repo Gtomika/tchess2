@@ -192,5 +192,19 @@ namespace TChess2.TChess
             }
         }
 
+        /// <summary>
+        /// Checks if a rank is the promotion rank of a player.
+        /// </summary>
+        public static bool IsPromotionRankOf(Player player, int rank)
+        {
+            if(player == Player.White)
+            {
+                return rank == 8;
+            } else
+            {
+                return rank == 1;
+            }
+        }
+
     }
 }

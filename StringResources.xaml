@@ -78,4 +78,15 @@
     <system:String x:Key="strBlackWon">Black (x) won</system:String>
     <system:String x:Key="strReason">Reason:</system:String>
     
+    <!-- Move list -->
+    <system:String x:Key="strMoves">Moves</system:String>
+    
+    <!-- Promotion dialog -->
+    <system:String x:Key="strPromotion">Promotion</system:String>
+    <system:String x:Key="strQueen">Queen</system:String>
+    <system:String x:Key="strRook">Rook</system:String>
+    <system:String x:Key="strBishop">Bishop</system:String>
+    <system:String x:Key="strKnight">Knight</system:String>
+    <system:String x:Key="strPromote">Promote</system:String>
+    
 </ResourceDictionary>

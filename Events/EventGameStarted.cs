@@ -7,7 +7,7 @@ using TChess2.TChess;
 
 namespace TChess2.Events
 {
-    class EventGameStarted
+    public class EventGameStarted
     {
 
         public string WhiteName;

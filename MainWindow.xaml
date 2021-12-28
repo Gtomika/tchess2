@@ -42,5 +42,8 @@
 
         <userControl:SettingsCornerView Grid.Column="3" Grid.Row="1"/>
 
+        <userControl:MoveListView Grid.Column="3" Grid.Row="2" Margin="{StaticResource dimMargin}"/>
+
     </Grid>
+    
 </Window>

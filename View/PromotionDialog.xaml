@@ -1,0 +1,36 @@
+﻿<Window x:Class="TChess2.View.PromotionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TChess2.View"
+        mc:Ignorable="d"
+        Title="{StaticResource strPromotion}" SizeToContent="WidthAndHeight" Background="Gray">
+    <StackPanel>
+        <WrapPanel>
+            <Image Source="{StaticResource imgWhiteQueen}" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"/>
+            <Image Source="{StaticResource imgBlackQueen}" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"/>
+            <RadioButton VerticalAlignment="Center" Margin="{StaticResource dimMargin}" Content="{StaticResource strQueen}"
+                         Checked="OnPromotionSelected" IsChecked="True" FontSize="{StaticResource dimFont}" GroupName="prom"/>
+        </WrapPanel>
+        <WrapPanel>
+            <Image Source="{StaticResource imgWhiteRook}" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"/>
+            <Image Source="{StaticResource imgBlackRook}" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"/>
+            <RadioButton VerticalAlignment="Center" Margin="{StaticResource dimMargin}" Content="{StaticResource strRook}"
+                         Checked="OnPromotionSelected" FontSize="{StaticResource dimFont}" GroupName="prom"/>
+        </WrapPanel>
+        <WrapPanel>
+            <Image Source="{StaticResource imgWhiteBishop}" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"/>
+            <Image Source="{StaticResource imgBlackBishop}" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"/>
+            <RadioButton VerticalAlignment="Center" Margin="{StaticResource dimMargin}" Content="{StaticResource strBishop}"
+                         Checked="OnPromotionSelected" FontSize="{StaticResource dimFont}" GroupName="prom"/>
+        </WrapPanel>
+        <WrapPanel>
+            <Image Source="{StaticResource imgWhiteKnight}" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"/>
+            <Image Source="{StaticResource imgBlackKnight}" Width="{StaticResource dimIconButton}" Height="{StaticResource dimIconButton}"/>
+            <RadioButton VerticalAlignment="Center" Margin="{StaticResource dimMargin}" Content="{StaticResource strKnight}"
+                         Checked="OnPromotionSelected" FontSize="{StaticResource dimFont}" GroupName="prom"/>
+        </WrapPanel>
+        <Button Content="{StaticResource strPromote}" MaxWidth="{StaticResource dimDefaultWidth}" Margin="{StaticResource dimMargin}" Click="OnPromoteClicked"/>
+    </StackPanel>
+</Window>

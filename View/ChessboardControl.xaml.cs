@@ -336,7 +336,14 @@ namespace TChess2.View
                  * However, I avoid some nasty logic about castling and en passant.
                  */
                 DrawPieces(CurrentGame, BoardFlip);
-                //draw the previos move helpers
+
+                //send the SAN of this move as an event
+                MessageHub.MessageHub.Instance.Publish(new EventMoveSan
+                {
+                    San = CurrentGame.Moves.Last().SAN
+                });
+
+                //draw the previous move helpers
                 DrawPreviousMoveHelpers(e.ChosenMove);
 
                 //play a sound for this move (if needed)
@@ -453,6 +460,13 @@ namespace TChess2.View
                         //user wants to make a move, to an empty or enemy square
                         //this is the move the user wants to make
                         Move attemptedMove = new Move(SelectedPosition, pos, CurrentGame.WhoseTurn);
+                        //is this move a promotion? then user will have to select what to promote to
+                        if (selectedPiece is Pawn && TChessUtils.IsPromotionRankOf(CurrentGame.WhoseTurn, pos.Rank))
+                        {
+                            var dialog = new PromotionDialog();
+                            dialog.ShowDialog();
+                            attemptedMove.Promotion = dialog.Promotion;
+                        }
                         //only allow if legal
                         if (CurrentGame.IsValidMove(attemptedMove))
                         {
